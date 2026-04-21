@@ -2,7 +2,7 @@
 from scipy import *
 from pylab import *
 import os,sys
-from strolger_util import cosmocalc
+import cosmocalc
 
 
 def run(z, qm=0.27, ql=0.73, ho=71):

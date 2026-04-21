@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os,sys,pdb,scipy,glob
 from pylab import *
-from strolger_util import util as u
+import util as u
 
 def get_central_wavelength(filter_file, skip=0, wavemult=1.):
     filter_data = loadtxt(filter_file,skiprows=skip)

@@ -11,8 +11,8 @@ from matplotlib.font_manager import fontManager, FontProperties
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 import datetime, time
 from matplotlib import dates as mdates
-from strolger_util import util as u
-from strolger_util import cosmocalc
+import util as u
+import cosmocalc
 import volume
 
 import multiprocessing

@@ -26,4 +26,8 @@ strolger@stsci.edu.
 
 -LGS, 20251024
 
+## Changes from upstream (strolger/BoomRate)
 
+- **Localized all paths in `control_time.py`** — replaced hardcoded references to an external SNANA installation (`$SNDATA_ROOT`) with paths relative to the script directory, so the code runs without needing SNANA installed
+
+- **Moved SDSS filters locally** — relocated `SDSS_web2001/*.dat` filter files into `templates/filters/SDSS/`

@@ -8,7 +8,7 @@ from scipy.interpolate import *
 from numpy import r_
 
 from matplotlib.font_manager import fontManager, FontProperties
-from strolger_util import cosmotools
+import cosmotools
 
 import warnings
 warnings.simplefilter("ignore",RuntimeWarning)
@@ -27,7 +27,7 @@ def csfh_crazy(z, *p):
     return(sfr)
     
 def csfh_crazy_time(time, *p):
-    from strolger_util import cosmotools as ct
+    import cosmotools as ct
     A,B,C,D = p
     lbt = 13.6 - time
     z = array([ct.cosmoz(x) for x in lbt])
@@ -87,7 +87,7 @@ def confidence_band(x, y, err, dfdp, confprob, func, popt, pcov): ## be sure to 
 
 
 def csfh_time(time, *p):
-    from strolger_util import cosmotools as ct
+    import cosmotools as ct
     A,B,C,D = p
     lbt = 13.6 - time
     z = array([ct.cosmoz(x) for x in lbt])
@@ -101,6 +101,8 @@ def ccsnr(z):
     D = 6.1
     sfr=A*((1+z)**C)/(1+((1+z)/B)**D)
     return(sfr)
+
+sfr_2020 = ccsnr
     
 def sco_model(x): ## a good fit to observed Ia rates
     if x < 1.0:
