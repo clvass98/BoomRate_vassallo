@@ -27,7 +27,7 @@ warnings.simplefilter("error",RuntimeWarning)
 m_root = os.environ['HOME']
 software = os.path.dirname('/'.join(os.path.realpath(__file__).split('/')[:-1]))
 script_dir = os.path.dirname(os.path.realpath(__file__))
-sndata_root = m_root+'/Other_codes/SNANA/SNDATA_ROOT'
+sndata_root = script_dir+'/SNANA'   # local SNANA files (filters, templates) inside the repo
 model_path = script_dir+'/templates/non1a'
 
 
@@ -145,15 +145,15 @@ def run(redshift, baseline, sens, type=['iip'], dstep=3, dmstep=0.5, dastep=0.5,
         passband = None, passskiprow=1, passwavemult=1000.,
         plot=False, verbose=False, review=False, biascor='flat',
         subtype_combination='divide_average'):
-    sndata_root = m_root+'/Other_codes/SNANA/SNDATA_ROOT'
+    sndata_root = script_dir+'/SNANA'
     model_path = script_dir+'/templates/non1a'
-    
+
     ### define the filters-- important for later
     if verbose: print('defining restframe sloan filters...')
     filter_dict={}
 
     if 'ia' in type:
-        for bessel_filter in glob.glob(m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/Bessell90/Bessell90_K09/Bessell90_?.dat'):
+        for bessel_filter in glob.glob(sndata_root+'/filters/Bessell90/Bessell90_K09/Bessell90_?.dat'):
             elam = get_central_wavelength(bessel_filter, wavemult=0.1)
             filter_dict[elam]=bessel_filter
     else:
@@ -166,9 +166,9 @@ def run(redshift, baseline, sens, type=['iip'], dstep=3, dmstep=0.5, dastep=0.5,
     if passband is not None:
         observed_filter = passband
     else:
-        #observed_filter=m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/JWST/NIRCAM/F444W_NRC_and_OTE_ModAB_mean.txt'
-        #observed_filter=m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/HST/HST_GOODS/F850LP_ACS.dat'
-        observed_filter=m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/HST/HST_Candles/ACS_WFC_F435W.dat'
+        #observed_filter=sndata_root+'/filters/JWST/NIRCAM/F444W_NRC_and_OTE_ModAB_mean.txt'
+        #observed_filter=sndata_root+'/filters/HST/HST_GOODS/F850LP_ACS.dat'
+        observed_filter=sndata_root+'/filters/HST/HST_Candles/ACS_WFC_F435W.dat'
         passwavemult=0.1
     ofilter_cen = get_central_wavelength(observed_filter,skip=passskiprow,wavemult=passwavemult)
     if verbose: print('observed filter effective wavelength= %4.1f nm'%ofilter_cen)
@@ -208,7 +208,7 @@ def run(redshift, baseline, sens, type=['iip'], dstep=3, dmstep=0.5, dastep=0.5,
         total_age_set=[]
         if 'ia' in type:
             models_used = ['Hsiao07']#'Foley07_lowz_uhsiao']
-            model_path = m_root+'/Other_codes/SNANA/SNDATA_ROOT/snsed'
+            model_path = sndata_root+'/snsed'  # for Ia runs (not copied locally; add if you need Ia)
         if 'slsn' in type:
             models_used = ['slsn_blackbody']
 
@@ -607,7 +607,7 @@ def rest_frame_lightcurve(types,dstep=3,verbose=True):
 
 
 def rest_frame_Ia_lightcurve(dstep=3, verbose=True):
-    models_dir = m_root+'/Other_codes/SNANA/SNDATA_ROOT/models/mlcs2k2/mlcs2k2.v007/'
+    models_dir = sndata_root+'/models/mlcs2k2/mlcs2k2.v007/'  # for Ia runs (not copied locally; add if you need Ia)
     rest_age = arange(-20,730.5,dstep)
     ## rest_age= arange(-20, -7, dstep) ## to limit to pre-peak discoveries
     mag_dict={}
@@ -615,7 +615,7 @@ def rest_frame_Ia_lightcurve(dstep=3, verbose=True):
         data = loadtxt(model)
         junk, yy = u.recast(rest_age, 0., data[:,0],data[:,1])
         filter = os.path.basename(model).split('_')[1][0]
-        elam = get_central_wavelength(m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/Bessell90/Bessell90_K09/Bessell90_'+filter+'.dat', wavemult=0.1)
+        elam = get_central_wavelength(sndata_root+'/filters/Bessell90/Bessell90_K09/Bessell90_'+filter+'.dat', wavemult=0.1)
         mag_dict[elam]=yy
     return(rest_age,mag_dict)
     
@@ -767,7 +767,7 @@ def kcor(best_age,f1,f2,models_used_dict,redshift,vega_spec, extrapolated=True, 
 
 def ext_dist_Ia(ext,observed_filter,redshift,passskiprow,passwavemult):
     from scipy.optimize import curve_fit
-    f1 = m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/Bessell90/Bessell90_K09/Bessell90_V.dat'
+    f1 = sndata_root+'/filters/Bessell90/Bessell90_K09/Bessell90_V.dat'
     w1 = get_central_wavelength(f1, wavemult=0.1)/1e3
     w2 = get_central_wavelength(observed_filter, skip=passskiprow, wavemult=passwavemult)/1e3/(1.0+redshift)
     A_1 = calzetti(array([w1]))
@@ -794,7 +794,7 @@ def ext_dist(ext,observed_filter,redshift,passskiprow, passwavemult, Rv=4.05, ob
         ## lambda_v = 1 #from Kelly12
         ## lambda_v = 0.025 ## nuclear region of Arp299, see ref. in Bondi et al. 2012
         lambda_v =2.27 ## for dahlen 2012.
-    f1 = m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/Bessell90/Bessell90_K09/Bessell90_V.dat'
+    f1 = sndata_root+'/filters/Bessell90/Bessell90_K09/Bessell90_V.dat'
     w1 = get_central_wavelength(f1, wavemult=0.1)/1e3
     w2 = get_central_wavelength(observed_filter, skip=passskiprow, wavemult=passwavemult)/1e3/(1.0+redshift)
     A_1 = calzetti(array([w1]),Rv=Rv)
@@ -810,9 +810,9 @@ def ext_dist_ccsn_old(ext,observed_filter,redshift,passskiprow, passwavemult,obs
     from scipy.optimize import curve_fit
     
     if observed:
-        f1 = m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/Bessell90/Bessell90_K09/Bessell90_V.dat'
+        f1 = sndata_root+'/filters/Bessell90/Bessell90_K09/Bessell90_V.dat'
     else:
-        f1 = m_root+'/Other_codes/SNANA/SNDATA_ROOT/filters/Bessell90/Bessell90_K09/Bessell90_B.dat'
+        f1 = sndata_root+'/filters/Bessell90/Bessell90_K09/Bessell90_B.dat'
     w1 = get_central_wavelength(f1, wavemult=0.1)/1e3
     w2 = get_central_wavelength(observed_filter, skip=passskiprow, wavemult=passwavemult)/1e3/(1.0+redshift)
     A_1 = calzetti(array([w1]))
