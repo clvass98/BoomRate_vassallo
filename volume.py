@@ -9,7 +9,7 @@ def run(z, qm=0.27, ql=0.73, ho=71):
     (dl,mu,peak)=cosmocalc.run(z, qm=qm, ql=ql, ho=ho)
     dm=dl/(1+z)
     qk=1.-qm-ql
-    dh=3.0e5/ho
+    dh=299792.458/ho  # c in km/s (CODATA); matches cosmocalc.co
 
     if (qk > 0):
         vc=(4*pi*dh**3/(2*qk))*(dm/dh*sqrt(1+qk*(dm/dh)**2)-1/(sqrt(abs(qk)))*math.asinh(sqrt(abs(qk))*dm/dh))
